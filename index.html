@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOLF RP</title>
+  <link rel="stylesheet" href="style.css">
+  <style type="text/css">@font-face {font-family:'Cairo';font-style:normal;font-weight:400;src:url(/cf-fonts/v/cairo/5.2.7/arabic/wght/normal.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:400;src:url(/cf-fonts/v/cairo/5.2.7/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:400;src:url(/cf-fonts/v/cairo/5.2.7/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:600;src:url(/cf-fonts/v/cairo/5.2.7/arabic/wght/normal.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:600;src:url(/cf-fonts/v/cairo/5.2.7/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:600;src:url(/cf-fonts/v/cairo/5.2.7/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:700;src:url(/cf-fonts/v/cairo/5.2.7/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:700;src:url(/cf-fonts/v/cairo/5.2.7/arabic/wght/normal.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:700;src:url(/cf-fonts/v/cairo/5.2.7/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:900;src:url(/cf-fonts/v/cairo/5.2.7/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:900;src:url(/cf-fonts/v/cairo/5.2.7/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Cairo';font-style:normal;font-weight:900;src:url(/cf-fonts/v/cairo/5.2.7/arabic/wght/normal.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;font-display:swap;}</style>
+</head>
+<body>
+  
+  <div id="loadingScreen" class="loading-screen">
+    <div class="background-overlay"></div>
+    <div class="loading-content">
+      <div class="logo-container">
+        <img src="https://i.postimg.cc/RCkfnqHM/wolf.png" alt="WOLF RP" class="logo">
+        <div class="logo-glow"></div>
+      </div>
+      <h1 class="server-name">WOLF RP</h1>
+      <div class="loading-bar-container">
+        <div class="loading-bar">
+          <div class="loading-fill" id="loadingFill"></div>
+          <div class="loading-shine"></div>
+        </div>
+        <div class="loading-percentage" id="loadingPercentage">0%</div>
+      </div>
+      <div class="loading-text">جـاري تـحـمـيـل .</div>
+    </div>
+  </div>
+
+  <div id="welcomeMessage" class="welcome-message hidden">
+    <div class="welcome-text">مـرحـبـا فـي وولـف ار بـي .</div>
+  </div>
+
+  <div id="mainWebsite" class="main-website hidden">
+    <div class="background-overlay"></div>
+    <div class="animated-bg"></div>
+    
+    <header class="header">
+      <div class="header-content">
+        <div class="header-top">
+          <div class="logo-container-header">
+            <img src="https://i.postimg.cc/RCkfnqHM/wolf.png" alt="WOLF RP" class="header-logo">
+          </div>
+          <h1 class="header-title">WOLF RP</h1>
+        </div>
+        
+        <div class="red-line"></div>
+        
+        <nav class="navigation" id="mainNav">
+          <button class="nav-btn" data-section="definition">
+            <span class="btn-text">تـعـريـف</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="nav-btn" data-section="rules">
+            <span class="btn-text">قوانين</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="nav-btn" data-section="branches">
+            <span class="btn-text">فروعنا</span>
+            <div class="btn-glow"></div>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section id="definition" class="content-section hidden">
+        <div class="section-title">تـعـريـف وولـف</div>
+        <div class="definition-content">
+          <div class="description-box">
+            وولف RP حـيـث الـواقـعـيـة عـنـوانـنا سيرفر وولف RP من أفضل و اكبر و اقوى السيرفرات المتواجدة الأن في الساحة يتميز وولف RP بشهرته وقوته الكبيرة التي حصل عليها في ايام قليلة أيضًا يتمز وولف بإهتمامته الكبيرة في أدق التفاصيل و تطبيق نظام الرول بلاي " المشدد " و الحياة الواقعيةوولف RP يضمن لأي عضو الحرية الكاملة و العدل الكامل و العيش في السيرفر بإثبات نفسك كعضو في الدولة و تكملة قصتك من البداية وولف RP يتميز بكثير من الوظائف و الافكار الجديدة و المتنوعة المستمرة بشكل دائم و البوتات المميزة التي تخدم الجميع في السيرفر دسكورد
+          </div>
+          
+          <div class="team-members">
+            <div class="member chief">
+              <div class="member-avatar">
+                <img src="https://i.postimg.cc/jq4KyFWd/cf1b381da6fd1931433cbf97d6e0e754.png" alt="رئيس وولف">
+                <div class="avatar-glow"></div>
+              </div>
+              <div class="member-info">
+                <div class="member-rank">رئـيـس</div>
+                <div class="member-name">عـبـدالله الـعـتـيـبـي</div>
+              </div>
+            </div>
+            
+            <div class="member vice">
+              <div class="member-avatar">
+                <img src="https://i.postimg.cc/VsW1XVS6/f0bded3384116b596e8b41fa209ca034.png" alt="نائب وولف">
+                <div class="avatar-glow"></div>
+              </div>
+              <div class="member-info">
+                <div class="member-rank">نـائـب</div>
+                <div class="member-name">عـبـد الـعـزيـز الـسـبـيـعـي</div>
+              </div>
+            </div>
+            
+            <div class="member advisor">
+              <div class="member-avatar">
+                <img src="https://i.postimg.cc/NGkYRzy0/29d117d779afa0d29c1f6a10ababa71f.png" alt="مستشار وولف">
+                <div class="avatar-glow"></div>
+              </div>
+              <div class="member-info">
+                <div class="member-rank">مـستـشـار</div>
+                <div class="member-name">احـمـد الـقـحـطـانـي</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="branches" class="content-section hidden">
+        <div class="section-title">فـروع وولـف</div>
+        <div class="branches-content">
+          <div class="branch">
+            <div class="branch-icon gold">
+              <img src="https://i.postimg.cc/RVH2Zx6Z/IMG-2275.png" alt="وولف ستي" class="branch-img">
+              <div class="icon-glow"></div>
+            </div>
+            <div class="branch-info">
+              <div class="branch-title">وولـف سـتـي الفـرع الاسـاسـي</div>
+              <div class="branch-line"></div>
+              <button class="join-btn gold" data-link="https://discord.gg/w-c">
+                <span>دخـول الـسـيـرفـر</span>
+                <div class="btn-particles"></div>
+              </button>
+            </div>
+          </div>
+          
+          <div class="branch">
+            <div class="branch-icon">
+              <img src="https://i.postimg.cc/9XRZMyrQ/IMG_7069.jpg" alt="وولف كود">
+              <div class="icon-glow"></div>
+            </div>
+            <div class="branch-info">
+              <div class="branch-title">وولـف كـود الفـرع الثـانـي</div>
+              <div class="branch-line"></div>
+              <button class="join-btn black" data-link="https://discord.gg/wc-1">
+                <span>دخـول الـسـيـرفـر</span>
+                <div class="btn-particles"></div>
+              </button>
+            </div>
+          </div>
+          
+          <div class="branch">
+            <div class="branch-icon">
+              <img src="https://i.postimg.cc/zDbKBTVJ/3_20260217_142105.jpg" alt="وولف شوب">
+              <div class="icon-glow"></div>
+            </div>
+            <div class="branch-info">
+              <div class="branch-title">وولـف شـوب الفـرع الـثـالـث</div>
+              <div class="branch-line"></div>
+              <button class="join-btn red" data-link="https://discord.gg/wc-2">
+                <span>دخـول الـسـيـرفـر</span>
+                <div class="btn-particles"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rules" class="content-section hidden">
+        <div class="section-title">قـوانـيـن وولـف</div>
+        <div class="rules-menu">
+          <button class="rule-btn" data-rule="gems-rule">
+            <span>قـوانـيـن الجـمـس</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="rule-btn" data-rule="jobs-rule">
+            <span>قـوانـيـن الـوظـائـف</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="rule-btn" data-rule="gangs-rule">
+            <span>قـوانـيـن الـعـصـابـات</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="rule-btn" data-rule="ban-rule">
+            <span>قـوانـيـن الـبانـد وعـوقـبـاتـه</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="rule-btn" data-rule="justice-rule">
+            <span>قـوانـيـن الـعـدل</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="rule-btn" data-rule="ambulance-rule">
+            <span>قـوانـيـن الاسـعـاف</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="rule-btn" data-rule="police-rule">
+            <span>قـوانـيـن الـشـرطـة</span>
+            <div class="btn-glow"></div>
+          </button>
+        </div>
+        
+        <div class="rule-content">
+          <div id="gems-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين الجمس</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              __ قوانين الجمس وولف 𝐑𝐏<br><br>
+              1- في حال انك جمس يمنع تتجول في القيم عليك توجه الي الاسبكتيت لاضمانه حمايه افضل<br>
+              2- في حال انك تبي تحول جمس يلزم عليك ان ترسل في تنبيهات سيرفر -رقابة لضمانة تنبيه جميع لاعبين<br>
+              3- نضام الاسبكتيت يجيب ان يكون ادنا دليل فيه 25 ثانيه<br>
+              4- يمنع عليك رفع صوتك علا الجمس<br>
+              5- في حال طلب منك الجمس فديو مدته 20دقيقه يكون قبل تخريب بي 10دقايق علا الأقل<br>
+              6- في حال ركبت جمس يمنع عليكم تقاطع الجمس او احد الركاب في الجمس الي بي إذنه<br>
+              7- في حال جاك جمس تطلع من راديو كلشي تدخل موجته<br>
+              8- في حال راكب معاء جمس يسقط رول بي معنا تتكلم معه تشق رول مسموح بي الكلام فقد<br>
+              9- في حال جاك استدعاء من رقابه مأتم رد يحق لا الجمس انزول من الأسبكتيت توجه لك في حال تجاهلته يحق له اعطائك -مخالف
+            </div>
+          </div>
+          
+          <div id="jobs-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين الوظائف</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              قـوانـيـن الـوظـائـف<br><br>
+              1. الالتزام بالواقعية :<br>
+              • يجب على سائق التكسي او اي وظيفة أخرى.. التصرف كما لو كان يعمل في وظيفة حقيقية.<br>
+              الالتزام بقواعد المرور أثناء القيادة (مثل التوقف عند الإشارات الحمراء وعدم القيادة بسرعة مفرطة).<br>
+              • عدم الانخراط في تصرفات غير قانونية (مثل الهروب من الشرطة أثناء العمل أو حمل أسلحة).<br><br>
+              2. احترام قواعد السيرفر :<br>
+              • ممنوع معرفة أماكن اللاعبين عبر الخريطة أو الديسكورد دون دور لعب واقعي.<br>
+              • الالتزام بمبادئ اللعب النظيف وعدم افتعال المشاكل أو التصرف بعشوائية.<br><br>
+              3. تفاعل الطوارئ :<br>
+              • إذا تعرضت لموقف طارئ (مثل تعرض السيارة لضرر أو هجوم)، يجب التفاعل مع الموقف بشكل واقعي.<br>
+              • طلب المساعدة من الشرطة أو خدمات الطوارئ عند الحاجة.<br><br>
+              4. المركبات والتصميم :<br>
+              • استخدام مركبات مخصصة بالعمل وعدم استخدام سيارات شخصية.<br>
+              • الحفاظ على المركبة نظيفة ومُهيأة للعمل.<br><br>
+              5. احترام الأدوار الأخرى :<br>
+              • عدم التعدي على دور الآخرين أو التسبب في فوضى تؤثر على اللاعبين الآخرين.<br>
+              • تجنب الاصطدام مع العصابات أو الشخصيات ذات الأدوار الأخرى دون سبب مقنع.
+            </div>
+          </div>
+          
+          <div id="gangs-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين الاجرام</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              __ قـوانـيـن الـعـصـابـات Wolf Rp<br><br>
+              1 - يجب عليك كرهينة الحفاظ على حياتك و تقدير موقفك و ما تستهبل و تنفيذ جميع اوامر الخاطف كذلك توضح للخاطف انك خايف ع حياتك<br><br>
+              2- يسمح تهديد المواطن بحالتين فقط :- وجود عداوة مسبقة بينكم مثبتة بمقطع فديو ويحق لك سرقته او خطفه لعمل سيناريو- تستطيع خطف شخص لاتعرفه وبدون وجود عداوة سابقة فقط بهدف انه يكون رهينة في سيناريو ويمنع سرقة الرهينة<br><br>
+              3- يمنع منعاً باتاً مشاركة الرهينة للخاطفين في نص السيناريو او بعد مدة<br><br>
+              4- يمنع منعا باتا اختطاف رهينة بالاتفاق سواء مع صديقك او غيره كإعطائه جزء من مبلغ السرقة ليكون رهينه<br><br>
+              5- يمنع قتل الرهينه اذا كانت تنفذ اوامر الخاطف<br><br>
+              6- عند تهديد مواطن وهربه لاحد المناطق الآمنه يحق لك تهديده وخطفه فيها او قتله الا عند هروبه لمركز الشرطة وايضاً نفس الكلام مع العسكري<br><br>
+              7- اذا خطفت مواطن واصبح رهينه ، لديك فقط 10 دقيقه لبداية تنفيذ السيناريو وفي حال تم تخطي هذي المدة يجب عليك اطلاق سراح الرهينة<br><br>
+              8- يجب عليك ان تكون مسلح و لا تعتبر الرهينه مخطوفه الا في حال تم تقيدها و بامكانه الهروب في حال عدم انتباه الخاطفين<br><br>
+              9- يمنع خطف مواطن لاخراج احد من اخوياك من السجن<br><br>
+              10- يمنع منعاً باتاً كلبشة شخص قبل استسلامه لك ورفع يديهوعند موت الشخص وهو مكلبش يمنع تركه مكلبش يجب عليك فك كلبشته<br><br>
+              11- يمنع إختطاف أي شخص في أي مكان عام ولا يمكن خطفة الا بعد مراقبتة بشكل كامل , والتأكد أن لا يوجد شخص يراك<br><br>
+              12- يجب عليك الجديه الكاملة في التفاوض و اخذ الموضوع بشكل جدي و الخوف على حياتك<br><br>
+              13- يمنع منعا باتا المفاوضة على رهينة ليست موجودة بموقع السيناريو
+            </div>
+          </div>
+          
+          <div id="ban-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين الباند و عقوباته</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              - الـعـقـوبـات -<br><br>
+              1 - فتح الخريطة = 50h<br>
+              2 - عدم اخفاء الايديات = 24h<br>
+              3 - استخدام شي مو معاك بالحقيبة = تصفير حقيبة و فلوس = 30h<br>
+              4 - قتل أو طلق في منطقة آمنة = تصفير حقيبة = 24h<br>
+              5 - RDM = 50h<br>
+              6 - VDM = 50h<br>
+              7 - LAR = 40h<br>
+              8 - رد الخطأ بالخطأ = 24h<br>
+              9 - مخالفة الرول بلي = 50h<br>
+              10 - التدخل بسيناريو ليس لك فيه اي علاقة = 60h<br>
+              11 - تطلع جبال بسيارة صغيرة = سحب المركبة = 24h<br>
+              12 - تظاهر بالـ AFK لكي لايتم القبض عليك = 75h<br>
+              13 - تسقط ولا ترجع مكان اسقاطك = 48h<br>
+              14 - الازعاج بالافري ون = 24h<br>
+              15 - تعطي كركترك الثاني اغراض او فلوس = 60h + تصفير + سحب الشخصية<br>
+              17 - القذف = نهائي<br>
+              18 - التفجير والتخريب بأي شكل من الأشكال = نهائي<br>
+              19 - تساعد على التخريب = نهائي<br>
+              20 - تجمع في مكان غير مخصص للتجميع وانت خارج القيم او مافي قيم = 24h + تصفير<br>
+              21 - يستخدم شي مو معاه في الحقيبة = 48h<br>
+              22 - تتكلم وانت مسقط = 48h<br>
+              23 - استخدام قلتشات = نهائي<br>
+              24 - تدبيل موارد = تصفير الحقيبه + 24h<br>
+              25 - تعدل السيارة وهي منقلبة = 24h<br>
+              26 - تضرب وانت مكلبش = 24h<br>
+              27 - تعدل على السيارة تخلي الكفر ماينفجر = 24h + سحب السيارة<br>
+              28 - تطلق وانت مكلبش = 48h + سحب سلاح<br>
+              29 - تطلق وانت تمشي بالسيارة = 24h + سحب سلاح<br>
+              30 - تطلع خارج القيم وانت ممسوك من العسكر او مخطوف : اذا كان عندك عذر ودليل على العذر ماراح يكون عليك شي الا اذا طلعت عمداً = 80h<br>
+              31 - ترفع صوتك على رقابي = نهائي<br>
+              32 - التهديد بطلب جمس = 48h<br>
+              33 - يسرق والاولوية مرفوعة = 48h + سحب جميع المسروقات<br>
+              34 - نشر = نهائي<br>
+              35 - عدم انصياعك الى اوامر الرقابي = نهائي<br>
+              36 - تسب الرقابي بأي شكل من الأشكال مثال : ياحمار + تقوله رقابي مايفهم وإلـخ….: نهائي<br>
+              37 - تحرر خويك من القسم سواء كان في عسكري او حتى مافيه عسكري = 24h<br>
+              38- تطلب رقابي وانت ماعندك دليل واضح او ماكان يتوفر لك دليل = 14h<br>
+              39 - تفجر وفي اعصار ولا تجديد : 24h<br>
+              40 - اذا كان عليك باند ودخلت الرحلة تتدبل المده<br><br>
+              ` اذا في شي مو مكتوب ما يعني أنك ما بتتحاسب عليه يتم تحديد المدة من الرقابي `
+            </div>
+          </div>
+          
+          <div id="justice-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين العدل</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              __Ministry of Justice Laws<br><br>
+              — المادة الأولى : إحترام جميع من في المحكمة دون متثناء .<br>
+              — المادة الثانية : عدم رفع الصوت والتحدث بلباقة وعدمالسخرية.<br>
+              — المادة الثالثة : عدم مقاطعة المتحدث نهائياً .<br>
+              — المادة الرابعة : بإستطاعة محامي الطرف الثاني الإعتراض على أقوال الطرف الأول بقوله (( أعترض))مع ذكر سبب الإعتراض .<br>
+              — المادة الخامسة: لا يتحدث أثناء الجلسة غير القاضي ومن يسمح لهم بالتحدث .<br>
+              — المادة السادسة : يمكن للمواطنين حضور القضايا ما عدا إذا كانت جلسة خاصة.<br>
+              — المادة السابعة : يمنع رفع السلاح من قبل أي شخصر غير مصرح له من قبل القاضي.<br>
+              — المادة الثامنة: في حال طلب اجازة من قبل منسوبي وزارة العدل، يجب إشعار مسؤولي العدل بذلك.<br>
+              — المادة التاسعة : لا يحق تدخل الأدمنية أو منسوبي وزارة الداخلية أو الدفاع في تغيير الأحكام الصادرة من القاضي وا وزير العدل وا نائبه.<br>
+              — المادة العاشرة: يحق لمنسوبي وزارة العدل طلب تعويض في حالة تم إهانتهم<br>
+              — المادة الحادية عشر: تتم المحاكمة العسكرية بوجود قاضي وعسكري وأحد من الرتب العليا من الوزارتين المدعى عليهم.<br>
+              — المادة الثانية عشر: يحق لمنسوبي وزارة الداخلية والدفاع رفع قضية على الوزارة الداخلية او الدفاع في حال تم فصلهم.<br>
+              — المادة الثالثة عشر: في حال تأخر أحد أطراف الدعوى عن موعد الجلسة تفتح جلسة المحاكمة ويبت في الحكم غيابيا ولا يحق له الإعتراض على الحكم.<br>
+              — المادة الرابعة عشر: يحق لوزير العدل ونائبه طلب دوريات حراسة عليهما في حال خروجهم من المدينة .<br>
+              — المادة الحامسة عشر: يمنع الغدر او ماشابه . __<br>
+              — Violation of any of the laws exposes you to legal punishment
+            </div>
+          </div>
+          
+          <div id="ambulance-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين الاسعاف</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              منع على المسعفين منعا باتا بناء عداوات مع المواطنين<br><br>
+              يمنع على المسعفين منعا باتا القيام بأي نشاط اجرامي<br><br>
+              يمنع على المسعفين منعا باتا حيازة أي نوع من الأسلحة (البيضاء أو النارية)<br><br>
+              يمنع التقديم للإسعاف بالشخصية الإجرامية<br><br>
+              يمنع على المسعفين العمل في أي أعمال أخرى<br><br>
+              يمنع على المسعفين منعا باتا تسريب أي معلومات تخص أي قطاع حكومي لأي شخص.<br><br>
+              يمنع على المسعفين التوجه إلى حالات طلق نار بدون إبلاغ الشرطة (يسمح لهم الاقتراب من الموقع بحيث يفصل بينهم مربع سكني على الاقل عن موقع إطلاق النار)<br><br>
+              يمنع على المسعفين نقل شخص في سيارة الإسعاف أو استخدام سيارة الإسعاف بشكل شخصي أو لتوصيل المواطنين<br><br>
+              يمنع على المسعفين علاج الحالات الجنائيه بدون إذن من العساكر<br><br>
+              يمنع إعطاء المواطنين أي عتاد يخص الإسعاف<br><br>
+              يمنع قيادة الهليكوبتر في حال لم تكن معك شهادة الهليكوبتر<br><br>
+              التقارير الطبية من رتبة دكتور فما فوق<br><br>
+              يجب احترام موظفي الحكومة وجميع المواطنين والتقليل من أي شخص يعرضك للفصل الفوري<br>
+              يجب عليك احترام جميع الرتب الأعلى منك والاستماع لهم وتنفيذ التعليمات الموجهة لك<br><br>
+              يجب إبلاغ مركز العمليات بتحركاتك الميدانية واخذ الإذن عليها<br><br>
+              يمنع الذهاب الى السجن من غير طلب وحدة عسكرية<br><br>
+              يمنع التعديل على السيارة من غير اذن المسؤول ويجب أن تكون التعديلات خفيفة لا تغير من مظهر السيارة<br><br>
+              لا يسمح لمركز العمليات الخروج من المستشفى في حال كان هناك أكثر من 3 مسعفين<br><br>
+              يمنع منعًا باتًا تسجيل خروجك والتوجه إلى أي مكان آخر أو قضاء الوقت بدون إجازة داخلية أو إذن من مسؤول<br><br>
+              يمنع منعًا باتًا نقل المصابين في أي مركبة غير المركبات المخصصة للإسعاف<br><br>
+              في حال لديك إجازة داخلية يجب وضع جميع أغراض الإسعاف في الخزنة الخاصة<br><br>
+              الالتزام بالزي الرسمي المحدد لكل رتبة<br><br>
+              في حال اعتدائك على أحد الزملاء سيصدر بحقك إنذار مباشر وقد تصل للفصل الفوري<br><br>
+              في حال وصول الإنذارات إلى 3 سيتم فصلك<br>
+              إهمال المصابين وعدم التوجه للبلاغات سوف يعرضك للمحاسبة الفورية<br><br>
+              في حال تم سرقة أي عدة من معداتك الإسعافية يجب التوجه إلى المسؤولين وتبليغهم وإلا ستحاسب<br><br>
+              يسمح التواجد في المستشفى في حال ما كانت لديك حالة وتستطيع أيضًا التوجه كوحدة حرة بعد أخذ الإذن من العمليات<br><br>
+              اقصى مدة استراحه او غفوه هي عشر دقائق ويجب تسجيل خروجك اثناء الاستراحه او الغفوه اذا كانت الغفوه اكثر من عشر دقائق فيجب عليك الخروج من السيرفر<br><br>
+              ممنوع منعًا باتًا التلميح للترقية بأي شكل كان سواء باستفسار أو أي تلميح بسيط وعقوبتها خصم نقاط مع تأخير الترقية<br><br>
+              يجب عرض التقارير الطبية على المسؤولين قبل تسليمها<br>
+              يمنع على المسعفين الوشم بجميع أنواعه أو لبس الأساور أو الخواتم<br><br>
+              يجب المحافظة على المركبات الإسعافية نظيفة ومعقمة لسلامة المرضى وسيتم محاسبة كل من يخالف ذلك<br><br>
+              أقصى مدة للإجازة الداخلية هي 4 أيام ويجب وضع جميع الأغراض التي تخص الإسعاف في الخزنة الخاصة بك في المستشفى (سيتم الفصل في حال مخالفة ذلك)<br><br>
+              غياب أكثر من ثلاث أيام متتالية بدون سبب قد يعرضك للإنذار أو للفصل إذا تكرر<br><br>
+              يجب عليك اختيار تخصص خاص بك في حال وصلت إلى رتبة دكتور
+            </div>
+          </div>
+          
+          <div id="police-rule" class="rule-box hidden">
+            <div class="rule-header">قوانين الشرطة</div>
+            <div class="rule-date"></div>
+            <div class="rule-text">
+              المداهمة<br><br>
+              2 - يتم طلب المداهمة من خلال الضباط وما فوق ولا يمكن مداهمة أي شخص الا من خلال أمر تنفيذ من المحكمة<br><br>
+              3 - في حال حدوث أي مخالفه سواء بـالرول بلاي او قوانين الشرطة سوف يتم محاسبة مسؤول الحالة فقط ويتحمل مسؤولية الأفراد<br><br>
+              4- يجب على العسكري عدم إخراج السلاح الا بعد ان يقوم المجرم بأخرج اي سلاحه<br><br>
+              5 - يجب على العسكري استخدام نفس فئة الأسلحة "خفيف, ثقيل" المستخدمة من المجرم بـ استثناء أوامر القيادة.<br><br>
+              6 - على جميع العساكر والأفراد عدم استخدام الأسلحة النارية في حال استخدام المجرم سلاح أبيض الا في حالة مهاجمة المجرم للعسكري.<br><br>
+              7 - في حال التفرقة بين المواطنين في التعامل سواء التفاوض مع مجرم او التعامل مع مسعف او مع مواطن بسوء سيتم تحويل الموضوع رقابياً وأن يتم التعامل الكامل بالرول وفي حدوده فقط<br>
+              في حال تم القاء القبض على المجرم يتم إعطائه التهم الأساسية فقط ولا يتم إضافة أي تهمة أخرى<br><br>
+              مثال<br><br>
+              في حال سرقة بنك وخطف مواطن وهروب يتم إعطائه سرقة بنك فقط<br>
+              وفي حال اطلاق النار او إهانة عسكري يتم أضافتها لسرقة البنك<br>
+              ويطبق ذلك على جميع السرقات<br><br><br><br><br>
+              قوانين الشرطة<br><br>
+              يجب أن يكون رجل الأمن مهذب تجاه المواطنين ومع زملائهم , يجب أن يكون لبقاً في أداء واجبه، متحكم في اعصابه ويتحمل أقصى درجات الصبر والتقدير. حتى في مواجهة الاستفزاز الشديد. لا يجوز لهم استخدام لغة أو إيماءات بذيئة أو عنيفة تجاه المواطنين أو زملائه في شرطة ريسبيكت.<br><br>
+              لا يجوز لرجال الأمن ارتكاب أي عمل من أعمال الفساد. وعليهم أيضا معارضة ومكافحة كل هذه الأعمال بصرامة و الإبلاغ عنها.<br><br>
+              يجب على رجال الأمن تطبيق القانون ، في أدائهم لواجبهم ، احترام وحماية كرامة الإنسان والحفاظ على حقوق الإنسان لجميع الأشخاص ودعمها.<br><br>
+              لا يجوز لرجال الأمن استخدام القوة الإجبارية إلا عند الضرورة القصوى او عند الاعتداء عليه بالضرر ويكون بالقدر المطلوب لأداء واجبهم.<br><br>
+              يمكن لرجل الأمن ممارسة عمله و تطبيق القانون كلما اقتضت الظروف ذلك ، سواء أكان بالزي الرسمي أو حتى وهو خارج العمل.<br><br>
+              يجب الحفاظ على سرية الأمور العسكرية ذات الطبيعة السرية التي في متناول رجل الأمن عند تطبيق القانون ، ما لم يتطلب أداء الواجب أو متطلبات العدالة خلاف ذلك بشكل صارم.<br><br>
+              يجب على رجال الأمن ضمان الحماية الكاملة لصحة الأشخاص المحتجزين لديهم ،و يجب عليهم اتخاذ إجراءات فورية لتأمين العناية الطبية عند الاقتضاء.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="stats-panel" id="statsPanel">
+      <div class="stats-title">احـصـائـيات الـسـيـرفـر</div>
+
+      <!-- server/online counters -->
+      <div class="stats-content">
+        <div class="stat-item servers">
+          <div class="stat-label">عدد الاعـضـاء</div>
+          <div class="stat-value" data-target="2500">0</div>
+        </div>
+        <div class="stat-item online">
+          <div class="stat-label">اونلاين</div>
+          <div class="stat-value" data-target="150">0</div>
+        </div>
+      </div>
+      <hr class="stats-separator">
+
+      <div class="social-section">
+        <div class="social-item tiktok">
+          <img src="https://i.postimg.cc/wvDm0k0Z/IMG_6770.jpg" alt="TikTok" class="social-icon">
+          <a href="https://www.tiktok.com/@wolf_rp6?_r=1&_t=ZS-94F7orREOCj" target="_blank">
+            حـسـابـنـا تـيـك تـوك
+          </a>
+        </div>
+
+        <div class="social-item discord">
+          <img src="https://i.postimg.cc/XJ9CQgQR/IMG_6771.jpg" alt="Discord" class="social-icon">
+          <a href="https://discord.gg/wr-1" target="_blank">سـيـرفـر ديـسـكورد</a>
+        </div>
+
+        <a class="social-item developer" href="" target="_blank" rel="noopener noreferrer">
+          <img src="https://i.postimg.cc/4yxDCj8d/IMG_6450.png" alt="ناكس" class="social-icon">
+          <div class="developer-card">
+            <div class="developer-text">تـم صـنـعـه مـن قـبـل نـاكـس ( Da7m )</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="rights-text">جميع حقوق تابعة لهجاد الليل</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"a3a7c5d0bbae400096ba173e48f04ab7","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
