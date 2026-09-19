@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بوابة وزارة العدل الرسمية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         :root {
             --bg-main: #0f0a05;
@@ -304,18 +308,28 @@
 
         <div id="statusTab" class="tab-content card">
             <h2 class="card-title">متابعة حالة الأذونات الصادرة</h2>
-            <div id="publicRequestsList">لا توجد طلبات معروضة حالياً.</div>
+            <div id="publicRequestsList">جاري جلب البيانات من السحابة...</div>
         </div>
 
         <div id="adminTab" class="tab-content card">
             <h2 class="card-title">لوحة مراجعة وأوامر وزير العدل والنائب</h2>
-            <div id="adminRequestsList">جاري تحميل الطلبات...</div>
+            <div id="adminRequestsList">جاري التحميل...</div>
         </div>
 
     </div>
 
     <script>
-        let requests = JSON.parse(localStorage.getItem('justice_requests') || '[]');
+        // إعدادات قاعدة البيانات السحابية (Firebase)
+        const firebaseConfig = {
+            databaseURL: "https://moj-lspd-default-rtdb.firebaseio.com"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        let requests = [];
         let isAdmin = false;
 
         function switchTab(tabId, btn) {
@@ -326,7 +340,20 @@
             renderRequests();
         }
 
-        // 1. تقديم الطلب من قبل الضابط
+        // الاستماع الفوري لقاعدة البيانات السحابية
+        database.ref('requests').on('value', (snapshot) => {
+            const data = snapshot.val();
+            requests = [];
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    requests.push({ idKey: key, ...data[key] });
+                });
+                requests.reverse();
+            }
+            renderRequests();
+        });
+
+        // 1. تقديم الطلب وحفظه سحابياً
         function submitRequest() {
             const officer = document.getElementById('officerName').value.trim();
             const type = document.getElementById('warrantType').value;
@@ -338,8 +365,9 @@
                 return;
             }
 
+            const reqId = 'MOJ-' + Math.floor(10000 + Math.random() * 90000);
             const newReq = {
-                id: 'MOJ-' + Math.floor(10000 + Math.random() * 90000),
+                id: reqId,
                 officer: officer,
                 type: type,
                 target: target,
@@ -348,27 +376,27 @@
                 date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             };
 
-            requests.unshift(newReq);
-            saveAndSync();
-            
-            alert("✅ تم إرسال الطلب بنجاح وهو الآن بانتظار موافقة وزير العدل أو النائب!");
-            
-            // تشغيل صوت الإشعار للوزير
-            document.getElementById('notifSound').play().catch(()=>{});
-
-            // تفريغ المدخلات
-            document.getElementById('targetName').value = '';
-            document.getElementById('warrantReason').value = '';
+            // حفظ الطلب في السحابة فوراً
+            database.ref('requests').push(newReq, (error) => {
+                if (!error) {
+                    alert("✅ تم إرسال الطلب بنجاح وهو محفوظ سحابياً الآن بانتظار موافقة الوزير!");
+                    document.getElementById('notifSound').play().catch(()=>{});
+                    document.getElementById('targetName').value = '';
+                    document.getElementById('warrantReason').value = '';
+                } else {
+                    alert("حدث خطأ في الاتصال بالسحابة!");
+                }
+            });
         }
 
-        // 2. تسجيل دخول الوزير / النائب (كلمة المرور الافتراضية: 1234)
+        // 2. تسجيل دخول الوزير / النائب (كلمة المرور: 1234)
         function toggleAdminLogin() {
             if (isAdmin) {
                 isAdmin = false;
                 document.getElementById('loginBtn').textContent = "دخول الوزير / النائب";
                 document.getElementById('adminTabBtn').style.display = "none";
                 switchTab('requestTab', document.querySelectorAll('.nav-tabs button')[0]);
-                alert("تم تسجيل الخروج بنجاح.");
+                alert("تم تسجيل الخروج.");
             } else {
                 const pass = prompt("أدخل كلمة مرور وزارة العدل للوصول للوحة التحكم:");
                 if (pass === "1234") {
@@ -383,30 +411,21 @@
             }
         }
 
-        // 3. الموافقة أو الرفض
-        function updateStatus(id, newStatus) {
-            const req = requests.find(r => r.id === id);
-            if (req) {
-                req.status = newStatus;
-                if (newStatus === 'approved') {
-                    req.judgeName = prompt("اكتب اسم القاضي / الوزير المعتمد للإذن:", "وزير العدل") || "وزير العدل";
-                }
-                saveAndSync();
-                renderRequests();
+        // 3. التحديث المباشر لحالة الطلب في السحابة
+        function updateStatus(idKey, newStatus) {
+            if (newStatus === 'approved') {
+                const judge = prompt("اكتب اسم القاضي / الوزير المعتمد للإذن:", "وزير العدل") || "وزير العدل";
+                database.ref('requests/' + idKey).update({ status: newStatus, judgeName: judge });
+            } else {
+                database.ref('requests/' + idKey).update({ status: newStatus });
             }
         }
 
-        function saveAndSync() {
-            localStorage.setItem('justice_requests', JSON.stringify(requests));
-            renderRequests();
-        }
-
-        // 4. عرض القوائم
+        // 4. عرض البيانات
         function renderRequests() {
             const pending = requests.filter(r => r.status === 'pending').length;
             document.getElementById('pendingCount').textContent = pending;
 
-            // قائمة المتابعة العامة
             const publicList = document.getElementById('publicRequestsList');
             publicList.innerHTML = requests.length ? '' : '<p style="text-align:center; color:var(--text-muted);">لا توجد طلبات مسجلة.</p>';
 
@@ -435,7 +454,6 @@
                 publicList.innerHTML += html;
             });
 
-            // لوحة الوزير والنائب
             if (isAdmin) {
                 const adminList = document.getElementById('adminRequestsList');
                 adminList.innerHTML = requests.length ? '' : '<p style="text-align:center; color:var(--text-muted);">لا توجد طلبات متاحة.</p>';
@@ -449,8 +467,8 @@
                             <small style="color:#777;">التاريخ: ${req.date}</small>
                             ${req.status === 'pending' ? `
                                 <div class="action-btns">
-                                    <button class="btn-approve" onclick="updateStatus('${req.id}', 'approved')">🟢 موافقة وإصدار</button>
-                                    <button class="btn-reject" onclick="updateStatus('${req.id}', 'rejected')">🔴 رفض الطلب</button>
+                                    <button class="btn-approve" onclick="updateStatus('${req.idKey}', 'approved')">🟢 موافقة وإصدار</button>
+                                    <button class="btn-reject" onclick="updateStatus('${req.idKey}', 'rejected')">🔴 رفض الطلب</button>
                                 </div>
                             ` : `<p style="margin-top:10px; font-weight:bold; font-size:13px;">الحالة: ${req.status === 'approved' ? 'تمت الموافقة والإصدار' : 'تم الرفض'}</p>`}
                         </div>
@@ -460,7 +478,7 @@
             }
         }
 
-        // 5. رسم صورة الوثيقة رسمياً عند الاعتماد
+        // 5. رسم صورة الوثيقة
         function generateWarrantCanvas(id) {
             const req = requests.find(r => r.id === id);
             const container = document.getElementById(`canvasContainer-${id}`);
@@ -475,23 +493,19 @@
             canvas.height = 450;
             const ctx = canvas.getContext('2d');
 
-            // خلفية وإطار
             ctx.fillStyle = "#120b05"; ctx.fillRect(0, 0, 750, 450);
             ctx.strokeStyle = "#ff7b00"; ctx.lineWidth = 5; ctx.strokeRect(12, 12, 726, 426);
             ctx.strokeStyle = "#332010"; ctx.lineWidth = 2; ctx.strokeRect(20, 20, 710, 410);
 
-            // عنوان
             ctx.fillStyle = "#ff7b00"; ctx.font = "bold 24px Cairo"; ctx.textAlign = "center";
             ctx.fillText("وزارة العدل — دولة LSPD", 375, 55);
 
             ctx.fillStyle = "#ffffff"; ctx.font = "bold 18px Cairo";
             ctx.fillText("أمر و " + req.type, 375, 90);
 
-            // خط فاصل
             ctx.strokeStyle = "#ff7b00"; ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(50, 105); ctx.lineTo(700, 105); ctx.stroke();
 
-            // التفاصيل
             ctx.textAlign = "right"; ctx.font = "bold 15px Cairo";
             
             ctx.fillStyle = "#ff7b00"; ctx.fillText("الرقم المرجعي:", 700, 140);
@@ -506,7 +520,6 @@
             ctx.fillStyle = "#ff7b00"; ctx.fillText("المعتمد:", 350, 175);
             ctx.fillStyle = "#ffffff"; ctx.fillText(req.judgeName || "وزير العدل", 270, 175);
 
-            // مربع السبب
             ctx.fillStyle = "#1a1108"; ctx.fillRect(50, 205, 650, 130);
             ctx.strokeStyle = "#ff7b00"; ctx.strokeRect(50, 205, 650, 130);
 
@@ -514,7 +527,6 @@
             ctx.fillStyle = "#dddddd"; ctx.font = "14px Cairo";
             ctx.fillText(req.reason, 680, 265);
 
-            // ختم رسمي
             ctx.save();
             ctx.translate(130, 370);
             ctx.rotate(-10 * Math.PI / 180);
@@ -526,7 +538,6 @@
             ctx.fillText("★ LSPD ★", 0, 22);
             ctx.restore();
 
-            // زر التنزيل
             const downloadBtn = document.createElement('button');
             downloadBtn.className = 'btn-download';
             downloadBtn.innerHTML = '📥 تنزيل الوثيقة (PNG)';
@@ -540,9 +551,6 @@
             container.appendChild(canvas);
             container.appendChild(downloadBtn);
         }
-
-        // تشغيل العرض الأولي
-        renderRequests();
     </script>
 </body>
 </html>
