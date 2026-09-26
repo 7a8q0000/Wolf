@@ -3,107 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة قيادة العمليات - إرسال شفرات البيجر</title>
+    <title>لوحة تحكم المسؤولين - LorDTowN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #080b11;
+            --card-bg: #111827;
+            --accent-red: #ff3366;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
         body {
-            background-color: #080c09;
-            color: #00ff66;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 30px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
             margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        .admin-container {
-            max-width: 700px;
-            margin: 0 auto;
-            border: 2px solid #ff3333;
+
+        /* نافذة إدخال الباسورد */
+        #authModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 8, 17, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .auth-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 51, 102, 0.3);
             padding: 30px;
-            background-color: #120505;
-            box-shadow: 0 0 25px rgba(255, 51, 51, 0.2);
-        }
-        h1 {
-            color: #ff4d4d;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 380px;
             text-align: center;
-            font-size: 22px;
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2);
+        }
+        .auth-box h2 {
+            color: var(--accent-red);
+            font-size: 20px;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+        }
+
+        /* اللوحة الرئيسية */
+        .admin-container {
+            display: none;
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            color: var(--accent-red);
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 5px;
         }
         .subtitle {
             text-align: center;
-            color: #bfa1a1;
+            color: var(--text-muted);
             font-size: 13px;
             margin-bottom: 25px;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
         label {
             display: block;
             margin-bottom: 8px;
-            color: #ff9999;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 14px;
+            color: #d1d5db;
         }
         input, select, textarea {
             width: 100%;
-            background: #000;
-            border: 1px solid #ff4d4d;
+            background: #03070c;
+            border: 1px solid #374151;
             color: #fff;
             padding: 12px;
-            font-size: 16px;
-            font-family: 'Courier New', Courier, monospace;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Cairo', sans-serif;
             box-sizing: border-box;
             outline: none;
+            transition: 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 10px rgba(255, 51, 102, 0.2);
         }
         textarea {
+            height: 90px;
             resize: vertical;
-            height: 100px;
         }
-        button {
-            background: #ff3333;
+
+        .send-btn {
+            background: var(--accent-red);
             color: #fff;
             border: none;
             padding: 14px;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
             transition: 0.3s;
-            text-transform: uppercase;
         }
-        button:hover {
-            background: #cc0000;
-            box-shadow: 0 0 15px #ff3333;
+        .send-btn:hover {
+            background: #e60039;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
         }
         #statusMessage {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
-            font-weight: bold;
-            font-size: 15px;
-        }
-        .history-box {
-            margin-top: 30px;
-            border-top: 1px dashed #555;
-            padding-top: 15px;
-        }
-        .history-item {
-            background: #1a0505;
-            border: 1px solid #441111;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 13px;
-            color: #ffcccc;
+            font-weight: 600;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <div class="admin-container">
+    <!-- نافذة طلب الرمز السري -->
+    <div id="authModal">
+        <div class="auth-box">
+            <h2>🔒 منطقة مقيدة للمسؤولين</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">أدخل الرمز السري للوصول للوحة البث</p>
+            <input type="password" id="adminPass" placeholder="الرمز السري..." style="text-align: center; margin-bottom: 15px;">
+            <button class="send-btn" onclick="checkPassword()">دخول النظام</button>
+            <div id="authError" style="color: #ff3366; font-size: 13px; margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم الفعلية -->
+    <div class="admin-container" id="adminPanel">
         <h1>[ لوحة قيادة العمليات - إرسال شفرات البيجر ]</h1>
-        <div class="subtitle">مخصص لمسؤولي السيناريو لإرسال الإشارات والبيانات الطارئة لفرقة التحقيق</div>
+        <div class="subtitle">إرسال التنبيهات الفورية لأجهزة البيجر الخاصة بالفرقة</div>
 
         <div class="form-group">
-            <label for="recipient">اختر المستقبل المستهدف:</label>
+            <label for="recipient">المستقبل المستهدف:</label>
             <select id="recipient">
-                <option value="الفرقة بالكامل">الفرقة بالكامل (جميع أجهزة البيجر)</option>
+                <option value="الفرقة بالكامل">الفرقة بالكامل (جميع الأجهزة)</option>
                 <option value="ماثيو ستانلي">ماثيو ستانلي (القائد)</option>
                 <option value="سكلر">سكلر</option>
                 <option value="بيتا">بيتا</option>
@@ -116,73 +167,47 @@
 
         <div class="form-group">
             <label for="pagerCode">كود البيجر (الأرقام المشفرة):</label>
-            <input type="text" id="pagerCode" placeholder="مثال: 884 - 109 - 332">
+            <input type="text" id="pagerCode" placeholder="مثال: 742 - 901 - 335">
         </div>
 
         <div class="form-group">
-            <label for="cipherText">محتوى الرسالة / اللغز المشفر:</label>
-            <textarea id="cipherText" placeholder="اكتب نص الشفرة أو التوجيه هنا..."></textarea>
+            <label for="cipherText">محتوى الشفرة / الرسالة:</label>
+            <textarea id="cipherText" placeholder="اكتب نص التوجيه أو اللغز هنا..."></textarea>
         </div>
 
-        <button onclick="sendSignalToTeam()">إرسال الشفرة وتنبيه البيجر 📡</button>
+        <button class="send-btn" onclick="sendSignal()">إرسال الشفرة وبث التنبيه 📡</button>
 
         <div id="statusMessage"></div>
-
-        <div class="history-box">
-            <label>سجل العمليات المرسلة في الجلسة الحالية:</label>
-            <div id="logContainer">
-                <span style="color: #666; font-size: 12px;">لم يتم إرسال أي شفرة حتى الآن...</span>
-            </div>
-        </div>
     </div>
 
     <script>
-        // دالة توليد صوت التنبيه (BEEP) برمئياً بدون الحاجة لملفات صوت خارجية
-        function playPagerBeep() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // عمل نغمتين متتاليتين تشبه تماماً صوت البيجر القديم
-                for (let i = 0; i < 2; i++) {
-                    setTimeout(() => {
-                        const oscillator = audioCtx.createOscillator();
-                        const gainNode = audioCtx.createGain();
-                        
-                        oscillator.type = 'sine';
-                        oscillator.frequency.value = 1800; // حِدّة الصوت (تردد عالي يشبه الإنذار)
-                        
-                        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioCtx.destination);
-                        
-                        oscillator.start();
-                        oscillator.stop(audioCtx.currentTime + 0.15);
-                    }, i * 200);
-                }
-            } catch (e) {
-                console.log("Audio not supported or blocked");
+        // الرمز السري الخاص بالمسؤولين (يمكنك تغليفه وتغييره هنا)
+        const secretPassword = "1234";
+
+        function checkPassword() {
+            const inputVal = document.getElementById('adminPass').value;
+            const errorDiv = document.getElementById('authError');
+
+            if (inputVal === secretPassword) {
+                document.getElementById('authModal').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            } else {
+                errorDiv.innerText = "الرمز السري غير صحيح!";
             }
         }
 
-        function sendSignalToTeam() {
+        function sendSignal() {
             const recipient = document.getElementById('recipient').value;
             const pagerCode = document.getElementById('pagerCode').value.trim();
             const cipherText = document.getElementById('cipherText').value.trim();
             const statusMessage = document.getElementById('statusMessage');
-            const logContainer = document.getElementById('logContainer');
 
             if (!pagerCode || !cipherText) {
-                statusMessage.style.color = "#ff3333";
-                statusMessage.innerHTML = "[ خطأ: يرجى تعبئة كود البيجر ونص الشفرة ]";
+                statusMessage.style.color = "#ff3366";
+                statusMessage.innerHTML = "خطأ: يرجى ملء كود البيجر ونص الشفرة.";
                 return;
             }
 
-            // تشغيل صوت التنبيه للمسؤول للتأكد من خروج الإشارة
-            playPagerBeep();
-
-            // حفظ الرسالة في التخزين المحلي (LocalStorage) لكي تظهر تلقائياً في صفحة الفريق والبيجر الخاصة بهم
             const newSignal = {
                 recipient: recipient,
                 code: pagerCode,
@@ -190,24 +215,13 @@
                 time: new Date().toLocaleTimeString()
             };
 
-            // جلب الرسائل القديمة وإضافة الجديدة
             let signalsList = JSON.parse(localStorage.getItem('pagerSignals') || '[]');
             signalsList.unshift(newSignal);
             localStorage.setItem('pagerSignals', JSON.stringify(signalsList));
 
-            statusMessage.style.color = "#00ff66";
-            statusMessage.innerHTML = "[ تم إرسال الإشارة وبث صوت البيجر بنجاح للفرقة! ]";
+            statusMessage.style.color = "#00ff80";
+            statusMessage.innerHTML = "✓ تم بث الشفرة بنجاح إلى أجهزة البيجر!";
 
-            // إضافة للسجل
-            if (logContainer.querySelector('span')) {
-                logContainer.innerHTML = '';
-            }
-            const logItem = document.createElement('div');
-            logItem.className = 'history-item';
-            logItem.innerHTML = `<strong>[${newSignal.time}]</strong> إلى (${recipient}) | الكود: <code>${pagerCode}</code>`;
-            logContainer.prepend(logItem);
-
-            // تفريغ الحقول
             document.getElementById('pagerCode').value = '';
             document.getElementById('cipherText').value = '';
         }
