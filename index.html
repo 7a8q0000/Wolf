@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LorDTowN | SECURE TERMINAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- مكتبة البث السحابي لربط الأجهزة ببعضها -->
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     
     <style>
         :root {
@@ -101,7 +99,8 @@
             align-items: center;
         }
         .status-dot {
-            width: 10px; height: 10px; background: red; border-radius: 50%;
+            width: 10px; height: 10px; background: #ff0044; border-radius: 50%;
+            transition: 0.3s;
         }
         .status-dot.online {
             background: var(--neon-green);
@@ -131,6 +130,11 @@
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 4px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .signal-code {
             color: #ffcc00;
@@ -231,9 +235,9 @@
         <div id="pagerView">
             <div class="pager-header">
                 <span>📟 SECURE PAGER</span>
-                <span id="connectionStatus" class="status-dot" title="حالة الاتصال بالسيرفر"></span>
+                <span id="connectionStatus" class="status-dot" title="حالة الاتصال البث المباشر"></span>
             </div>
-            <button class="audio-init-btn" id="audioBtn" onclick="initAudio()">🔊 تفعيل الاتصال واستقبال الإشارات (اضغط هنا)</button>
+            <button class="audio-init-btn" id="audioBtn" onclick="initAudio()">🔊 تفعيل الصوت وتلقي الشفرات (اضغط هنا أولاً)</button>
             <div class="pager-screen" id="pagerScreen">
                 <div class="standby-text">[ في انتظار الإشارات الميدانية... ]</div>
             </div>
@@ -266,7 +270,7 @@
                 <textarea id="signalText" class="admin-input" style="height: 80px;" placeholder="التعليمات أو اللغز..."></textarea>
             </div>
 
-            <button class="send-btn" onclick="broadcastSignal()">بث الإشارة 📡</button>
+            <button class="send-btn" id="sendBtn" onclick="broadcastSignal()">بث الإشارة 📡</button>
             <div id="adminStatus" style="text-align: center; margin-top: 15px; color: var(--neon-green); font-weight: bold;"></div>
             
             <div class="back-btn" onclick="logoutAdmin()">← إغلاق اللوحة والعودة للبيجر</div>
@@ -277,39 +281,39 @@
     <script>
         const ADMIN_PASSWORD = "1234";
         
-        // إعدادات السيرفر السحابي المجاني (MQTT)
-        const MQTT_BROKER = "wss://broker.emqx.io:8083/mqtt"; 
-        const MQTT_TOPIC = "lordtown_pager_secret_channel_2026_x99"; // قناة مشفرة خاصة بسيرفركم
-        let mqttClient;
+        // قناة التشفير الخاصة بسيرفركم (عبر سيرفر بث سحابي مباشر على منفذ HTTPS 443)
+        const CHANNEL_URL = "https://ntfy.sh/lordtown_pager_v2026_secured_net";
 
-        // الاتصال بالسيرفر السحابي فور فتح الموقع
-        function connectToSatellite() {
-            mqttClient = mqtt.connect(MQTT_BROKER);
-            
-            mqttClient.on('connect', function () {
-                document.getElementById('connectionStatus').classList.add('online');
-                mqttClient.subscribe(MQTT_TOPIC);
-            });
+        // الاتصال المباشر بالسيرفر السحابي فور فتح الصفحة
+        function connectLiveStream() {
+            const statusDot = document.getElementById('connectionStatus');
+            const eventSource = new EventSource(`${CHANNEL_URL}/json`);
 
-            // عندما يستقبل الجهاز أي رسالة من السيرفر
-            mqttClient.on('message', function (topic, message) {
-                const newSignal = JSON.parse(message.toString());
-                
-                // حفظها في الجوال عشان لو قفل الموقع ورجع يلقاها
-                let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
-                signals.unshift(newSignal);
-                localStorage.setItem('lordtown_signals', JSON.stringify(signals));
-                
-                // تشغيل الصوت وتحديث الشاشة
-                playBeep();
-                updatePagerScreen();
-            });
+            eventSource.onopen = () => {
+                statusDot.classList.add('online');
+            };
+
+            eventSource.onmessage = (event) => {
+                try {
+                    const packet = JSON.parse(event.data);
+                    if (packet.event === 'message' && packet.message) {
+                        const signal = JSON.parse(packet.message);
+                        saveAndRenderSignal(signal);
+                        playBeep();
+                    }
+                } catch (e) {
+                    console.error("Signal parsing error", e);
+                }
+            };
+
+            eventSource.onerror = () => {
+                statusDot.classList.remove('online');
+            };
         }
 
-        // تشغيل الاتصال عند تحميل الصفحة
         window.onload = () => {
-            connectToSatellite();
-            updatePagerScreen();
+            connectLiveStream();
+            renderStoredSignals();
         };
 
         function openAuthModal() {
@@ -376,11 +380,12 @@
             } catch(e) {}
         }
 
-        function broadcastSignal() {
+        async function broadcastSignal() {
             const target = document.getElementById('targetUser').value;
             const code = document.getElementById('signalCode').value.trim();
             const text = document.getElementById('signalText').value.trim();
             const status = document.getElementById('adminStatus');
+            const sendBtn = document.getElementById('sendBtn');
 
             if (!code || !text) {
                 status.style.color = "var(--neon-red)";
@@ -392,30 +397,51 @@
                 target: target,
                 code: code,
                 text: text,
-                time: new Date().toLocaleTimeString()
+                time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
             };
 
-            // إرسال البيانات عبر السيرفر السحابي لجميع الأجهزة
-            if (mqttClient && mqttClient.connected) {
-                mqttClient.publish(MQTT_TOPIC, JSON.stringify(newSignal));
-                status.style.color = "var(--neon-green)";
-                status.innerText = "✓ تم بث الإشارة عبر الأقمار الصناعية بنجاح!";
-                
-                document.getElementById('signalCode').value = '';
-                document.getElementById('signalText').value = '';
-            } else {
+            sendBtn.disabled = true;
+            status.style.color = "#aaa";
+            status.innerText = "جاري بث الشفرة عبر الأقمار الصناعية...";
+
+            try {
+                const response = await fetch(CHANNEL_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(newSignal)
+                });
+
+                if (response.ok) {
+                    status.style.color = "var(--neon-green)";
+                    status.innerText = "✓ تم بث الشفرة بنجاح ووصلت لجميع الأجهزة!";
+                    document.getElementById('signalCode').value = '';
+                    document.getElementById('signalText').value = '';
+                } else {
+                    throw new Error("Failed to post");
+                }
+            } catch (err) {
                 status.style.color = "var(--neon-red)";
-                status.innerText = "خطأ: غير متصل بالسيرفر السحابي!";
+                status.innerText = "خطأ أثناء الاتصال بالسيرفر! جرب مجدداً.";
+            } finally {
+                sendBtn.disabled = false;
+                setTimeout(() => status.innerText = '', 3500);
             }
-            
-            setTimeout(() => status.innerText = '', 3000);
         }
 
-        function updatePagerScreen() {
+        function saveAndRenderSignal(signal) {
+            let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
+            // منع التكرار
+            if (!signals.some(s => s.code === signal.code && s.time === signal.time && s.text === signal.text)) {
+                signals.unshift(signal);
+                localStorage.setItem('lordtown_signals', JSON.stringify(signals));
+                renderStoredSignals();
+            }
+        }
+
+        function renderStoredSignals() {
             let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
             const screen = document.getElementById('pagerScreen');
-            if(signals.length === 0) return;
-            
+            if (signals.length === 0) return;
+
             screen.innerHTML = '';
             signals.forEach(sig => {
                 const div = document.createElement('div');
