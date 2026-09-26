@@ -235,9 +235,9 @@
         <div id="pagerView">
             <div class="pager-header">
                 <span>📟 SECURE PAGER</span>
-                <span id="connectionStatus" class="status-dot" title="حالة الاتصال البث المباشر"></span>
+                <span id="connectionStatus" class="status-dot" title="حالة الاتصال"></span>
             </div>
-            <button class="audio-init-btn" id="audioBtn" onclick="initAudio()">🔊 تفعيل الصوت وتلقي الشفرات (اضغط هنا أولاً)</button>
+            <button class="audio-init-btn" id="audioBtn" onclick="initAudio()">🔊 تفعيل الصوت وتلقي الشفرات (اضغط هنا)</button>
             <div class="pager-screen" id="pagerScreen">
                 <div class="standby-text">[ في انتظار الإشارات الميدانية... ]</div>
             </div>
@@ -281,39 +281,51 @@
     <script>
         const ADMIN_PASSWORD = "1234";
         
-        // قناة التشفير الخاصة بسيرفركم (عبر سيرفر بث سحابي مباشر على منفذ HTTPS 443)
-        const CHANNEL_URL = "https://ntfy.sh/lordtown_pager_v2026_secured_net";
+        // سيرفر بث مجاني بنظام HTTP REST (شغال 100% بدون أي حجب)
+        const API_URL = "https://ntfy.sh/lordtown_pager_final_v2026_safe";
 
-        // الاتصال المباشر بالسيرفر السحابي فور فتح الصفحة
-        function connectLiveStream() {
-            const statusDot = document.getElementById('connectionStatus');
-            const eventSource = new EventSource(`${CHANNEL_URL}/json`);
+        let processedIds = new Set();
+        let isInitialLoad = true;
 
-            eventSource.onopen = () => {
-                statusDot.classList.add('online');
-            };
+        // فحص مستمر للرسائل كل ثانيتين عبر HTTPS المباشر
+        async function fetchLiveSignals() {
+            try {
+                const response = await fetch(`${API_URL}/json?poll=1&since=2h`);
+                if (!response.ok) throw new Error("Net Error");
 
-            eventSource.onmessage = (event) => {
-                try {
-                    const packet = JSON.parse(event.data);
-                    if (packet.event === 'message' && packet.message) {
-                        const signal = JSON.parse(packet.message);
-                        saveAndRenderSignal(signal);
-                        playBeep();
-                    }
-                } catch (e) {
-                    console.error("Signal parsing error", e);
+                const text = await response.text();
+                const lines = text.trim().split('\n').filter(Boolean);
+                
+                let receivedNew = false;
+
+                lines.forEach(line => {
+                    try {
+                        const packet = JSON.parse(line);
+                        if (packet.event === 'message' && packet.message) {
+                            const signal = JSON.parse(packet.message);
+                            if (!processedIds.has(packet.id)) {
+                                processedIds.add(packet.id);
+                                appendSignalToScreen(signal);
+                                if (!isInitialLoad) receivedNew = true;
+                            }
+                        }
+                    } catch(e){}
+                });
+
+                if (receivedNew) {
+                    playBeep();
                 }
-            };
 
-            eventSource.onerror = () => {
-                statusDot.classList.remove('online');
-            };
+                isInitialLoad = false;
+                document.getElementById('connectionStatus').className = 'status-dot online';
+            } catch (err) {
+                document.getElementById('connectionStatus').className = 'status-dot';
+            }
         }
 
         window.onload = () => {
-            connectLiveStream();
-            renderStoredSignals();
+            fetchLiveSignals();
+            setInterval(fetchLiveSignals, 2000);
         };
 
         function openAuthModal() {
@@ -402,10 +414,10 @@
 
             sendBtn.disabled = true;
             status.style.color = "#aaa";
-            status.innerText = "جاري بث الشفرة عبر الأقمار الصناعية...";
+            status.innerText = "جاري بث الشفرة بالشبكة العامة...";
 
             try {
-                const response = await fetch(CHANNEL_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify(newSignal)
                 });
@@ -415,44 +427,32 @@
                     status.innerText = "✓ تم بث الشفرة بنجاح ووصلت لجميع الأجهزة!";
                     document.getElementById('signalCode').value = '';
                     document.getElementById('signalText').value = '';
+                    fetchLiveSignals();
                 } else {
-                    throw new Error("Failed to post");
+                    throw new Error("Send failed");
                 }
             } catch (err) {
                 status.style.color = "var(--neon-red)";
-                status.innerText = "خطأ أثناء الاتصال بالسيرفر! جرب مجدداً.";
+                status.innerText = "خطأ أثناء الإرسال! تأكد من الاتصال بالإنترنت.";
             } finally {
                 sendBtn.disabled = false;
                 setTimeout(() => status.innerText = '', 3500);
             }
         }
 
-        function saveAndRenderSignal(signal) {
-            let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
-            // منع التكرار
-            if (!signals.some(s => s.code === signal.code && s.time === signal.time && s.text === signal.text)) {
-                signals.unshift(signal);
-                localStorage.setItem('lordtown_signals', JSON.stringify(signals));
-                renderStoredSignals();
-            }
-        }
-
-        function renderStoredSignals() {
-            let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
+        function appendSignalToScreen(sig) {
             const screen = document.getElementById('pagerScreen');
-            if (signals.length === 0) return;
+            const standby = screen.querySelector('.standby-text');
+            if (standby) standby.remove();
 
-            screen.innerHTML = '';
-            signals.forEach(sig => {
-                const div = document.createElement('div');
-                div.className = 'signal-card';
-                div.innerHTML = `
-                    <div style="font-size: 11px; color: #668c75; margin-bottom: 5px;">[${sig.time}] المستهدف: ${sig.target}</div>
-                    <div class="signal-code">CODE: ${sig.code}</div>
-                    <div style="font-size: 13px; margin-top: 5px;">${sig.text}</div>
-                `;
-                screen.appendChild(div);
-            });
+            const div = document.createElement('div');
+            div.className = 'signal-card';
+            div.innerHTML = `
+                <div style="font-size: 11px; color: #668c75; margin-bottom: 5px;">[${sig.time}] المستهدف: ${sig.target}</div>
+                <div class="signal-code">CODE: ${sig.code}</div>
+                <div style="font-size: 13px; margin-top: 5px;">${sig.text}</div>
+            `;
+            screen.insertBefore(div, screen.firstChild);
         }
     </script>
 </body>
