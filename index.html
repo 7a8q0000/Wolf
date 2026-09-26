@@ -3,164 +3,490 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LorDTowN | مركز العمليات والاستخبارات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>LorDTowN | SECURE TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(17, 24, 39, 0.7);
-            --border-color: rgba(0, 255, 128, 0.2);
-            --primary-glow: rgba(0, 255, 128, 0.4);
-            --accent-green: #00ff80;
-            --accent-red: #ff3366;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+            --bg-dark: #02040a;
+            --neon-green: #00ff66;
+            --neon-red: #ff0044;
+            --glass-bg: rgba(10, 15, 20, 0.85);
+            --border-glow: rgba(0, 255, 102, 0.4);
         }
 
+        * { box-sizing: border-box; }
         body {
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 255, 128, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 51, 102, 0.05) 0%, transparent 40%);
-            color: var(--text-main);
-            font-family: 'Cairo', sans-serif;
             margin: 0;
-            min-height: 100vh;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.03) 0%, transparent 60%),
+                linear-gradient(rgba(0, 255, 102, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 102, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        /* شريط العلوي (زر المسؤولين) */
+        .top-nav {
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        .logo {
+            font-weight: 900;
+            color: var(--neon-green);
+            letter-spacing: 2px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .admin-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #aaa;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .admin-btn:hover {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            box-shadow: 0 0 15px rgba(255, 0, 68, 0.3);
+        }
+
+        /* الحاوية المركزية للتبديل بين الواجهات */
+        .main-container {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            position: relative;
         }
 
-        .container {
+        /* -------------------------------------- */
+        /* 1. واجهة البيجر (Pager View) */
+        /* -------------------------------------- */
+        #pagerView {
+            width: 100%;
+            max-width: 450px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 255, 102, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            transition: all 0.5s ease;
+        }
+        .pager-header {
+            text-align: center;
+            border-bottom: 1px dashed var(--neon-green);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            color: var(--neon-green);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+        .pager-screen {
+            background: #010305;
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            border-radius: 10px;
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,1);
+        }
+        .standby-text {
+            color: #334c3d;
+            text-align: center;
+            margin-top: 100px;
+            font-family: 'Courier New', Courier, monospace;
+            animation: pulse 2s infinite;
+        }
+        .signal-card {
+            background: rgba(0, 255, 102, 0.05);
+            border-right: 3px solid var(--neon-green);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .signal-code {
+            color: #ffcc00;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+        }
+        .audio-init-btn {
+            width: 100%;
+            background: rgba(0, 255, 102, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .audio-init-btn:hover { background: var(--neon-green); color: #000; }
+
+        /* -------------------------------------- */
+        /* 2. واجهة المسؤولين (Admin View) */
+        /* -------------------------------------- */
+        #adminView {
+            display: none;
             width: 100%;
             max-width: 600px;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
+            background: rgba(15, 5, 5, 0.9);
+            border: 1px solid var(--neon-red);
             border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 128, 0.1);
+            padding: 35px;
+            box-shadow: 0 0 50px rgba(255, 0, 68, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.9);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        #adminView.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .admin-header {
+            color: var(--neon-red);
             text-align: center;
-        }
-
-        .logo-badge {
-            display: inline-block;
-            background: rgba(0, 255, 128, 0.1);
-            color: var(--accent-green);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(0, 255, 128, 0.3);
-        }
-
-        h1 {
-            font-size: 26px;
             font-weight: 900;
-            margin: 0 0 10px 0;
+            font-size: 22px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,0,68,0.3);
+            padding-bottom: 15px;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block; color: #ff99aa; margin-bottom: 8px; font-size: 14px;
+        }
+        .admin-input {
+            width: 100%;
+            background: #050101;
+            border: 1px solid rgba(255,0,68,0.4);
             color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
         }
-
-        p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 35px;
+        .admin-input:focus { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255,0,68,0.3); }
+        .send-btn {
+            width: 100%;
+            background: var(--neon-red);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.3s;
         }
-
-        .menu-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .btn-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 128, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 16px 20px;
-            border-radius: 12px;
-            color: var(--text-main);
+        .send-btn:hover { background: #cc0033; box-shadow: 0 0 20px rgba(255,0,68,0.5); }
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #888;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            font-size: 13px;
+            cursor: pointer;
         }
+        .back-btn:hover { color: #fff; }
 
-        .btn-card:hover {
-            background: rgba(0, 255, 128, 0.08);
-            border-color: var(--accent-green);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 128, 0.15);
+        /* -------------------------------------- */
+        /* نافذة الباسورد المخيفة (Modal) */
+        /* -------------------------------------- */
+        #authModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            backdrop-filter: blur(10px);
         }
-
-        .btn-card.admin {
-            border-color: rgba(255, 51, 102, 0.3);
+        .auth-box {
+            background: #0a0303;
+            border: 1px solid var(--neon-red);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(255,0,68,0.2);
+            transition: 0.1s;
         }
-
-        .btn-card.admin:hover {
-            background: rgba(255, 51, 102, 0.08);
-            border-color: var(--accent-red);
-            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.15);
-        }
-
-        .btn-card span.icon {
+        .auth-box h2 { color: var(--neon-red); margin-top: 0; }
+        .auth-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid rgba(255,0,68,0.5);
+            color: #fff;
+            padding: 15px;
+            text-align: center;
             font-size: 20px;
+            letter-spacing: 5px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .auth-btn {
+            background: var(--neon-red);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        /* تأثير الهزة للخطأ (Glitch/Shake) */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-1deg); }
+            50% { transform: translateX(10px) rotate(1deg); }
+            75% { transform: translateX(-10px) rotate(-1deg); }
+            100% { transform: translateX(0); }
+        }
+        .shake-error {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ff0000 !important;
+            box-shadow: 0 0 40px rgba(255,0,0,0.8) !important;
+        }
+        #errorMsg {
+            color: #ff0000;
+            font-weight: 900;
+            font-size: 22px;
+            margin-top: 15px;
+            text-shadow: 0 0 10px #ff0000;
+            display: none;
         }
 
-        .footer {
-            margin-top: 35px;
-            font-size: 12px;
-            color: #6b7280;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-        }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-badge">SYSTEM SECURE // LORDTOWN</div>
-        <h1>مركز عمليات الاستخبارات</h1>
-        <p>نظام رصد ومتابعة شفرات البيجر الخاصة بالسيناريو</p>
+    <!-- الشريط العلوي -->
+    <div class="top-nav">
+        <div class="logo">L O R D T O W N // SYS</div>
+        <button class="admin-btn" onclick="openAuthModal()">⚙️ تحكم المسؤولين</button>
+    </div>
 
-        <div class="menu-grid">
-            <!-- جهاز البيجر -->
-            <a href="pager.html" class="btn-card">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span class="icon">📟</span>
-                    <span>تشغيل جهاز البيجر (للفرقة)</span>
-                </div>
-                <span>←</span>
-            </a>
-
-            <!-- لوحة المسؤولين -->
-            <a href="admin.html" class="btn-card admin">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span class="icon">🔒</span>
-                    <span>لوحة تحكم المسؤولين (الإرسال)</span>
-                </div>
-                <span>←</span>
-            </a>
-
-            <!-- موقع الشرطة العام -->
-            <a href="https://7a8q0000.github.io/LorDTowN-./" class="btn-card" target="_blank">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span class="icon">🛡️</span>
-                    <span>موقع الشرطة الرسمي</span>
-                </div>
-                <span>↗</span>
-            </a>
-        </div>
-
-        <div class="footer">
-            جميع الحقوق محفوظة لصالح سيرفر LorDTowN &copy; 2026
+    <!-- نافذة طلب الرمز السري (مخفية) -->
+    <div id="authModal">
+        <div class="auth-box" id="authBox">
+            <h2>⚠️ تحقق أمني صارم</h2>
+            <p style="color: #888; font-size: 13px; margin-bottom: 25px;">أدخل شفرة التشفير الخاصة بالقيادة</p>
+            <input type="password" id="adminPass" class="auth-input" placeholder="****">
+            <button class="auth-btn" onclick="verifyPassword()">تأكيد الدخول</button>
+            <div id="errorMsg">[ تم الرفض.. اذلف! ]</div>
+            <div class="back-btn" style="margin-top: 20px;" onclick="closeAuthModal()">إلغاء والعودة</div>
         </div>
     </div>
 
+    <div class="main-container">
+        
+        <!-- ============================== -->
+        <!-- واجهة 1: البيجر (تظهر دائماً) -->
+        <!-- ============================== -->
+        <div id="pagerView">
+            <div class="pager-header">📟 SECURE PAGER - الفرقة الخاصة</div>
+            <button class="audio-init-btn" id="audioBtn" onclick="initAudio()">🔊 تفعيل الاتصال بالأقمار الصناعية (اضغط هنا)</button>
+            <div class="pager-screen" id="pagerScreen">
+                <div class="standby-text">[ في انتظار الإشارات الميدانية... ]</div>
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- واجهة 2: لوحة الإرسال (للمسؤولين) -->
+        <!-- ============================== -->
+        <div id="adminView">
+            <div class="admin-header">[ مركز التحكم - إرسال الشفرات ]</div>
+            
+            <div class="input-group">
+                <label>تحديد الهدف (المستقبل):</label>
+                <select id="targetUser" class="admin-input">
+                    <option value="الفرقة بالكامل">الفرقة بالكامل (بث عام)</option>
+                    <option value="ماثيو ستانلي">ماثيو ستانلي</option>
+                    <option value="سكلر">سكلر</option>
+                    <option value="بيتا">بيتا</option>
+                    <option value="ليو">ليو</option>
+                    <option value="سيف">سيف</option>
+                    <option value="سلف">سلف</option>
+                    <option value="أيمن">أيمن</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>كود الإحداثيات (الأرقام):</label>
+                <input type="text" id="signalCode" class="admin-input" placeholder="مثال: 009 - 881 - 422">
+            </div>
+
+            <div class="input-group">
+                <label>محتوى الرسالة المشفرة:</label>
+                <textarea id="signalText" class="admin-input" style="height: 80px;" placeholder="التعليمات أو اللغز..."></textarea>
+            </div>
+
+            <button class="send-btn" onclick="broadcastSignal()">بث الإشارة 📡</button>
+            <div id="adminStatus" style="text-align: center; margin-top: 15px; color: var(--neon-green); font-weight: bold;"></div>
+            
+            <div class="back-btn" onclick="logoutAdmin()">← إغلاق اللوحة والعودة للبيجر</div>
+        </div>
+
+    </div>
+
+    <script>
+        // الباسورد الخاص بالمسؤولين (تقدر تغيره من هنا)
+        const ADMIN_PASSWORD = "1234";
+
+        // === نظام التحقق والتبديل بين الواجهات ===
+        function openAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+            document.getElementById('adminPass').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('authBox').classList.remove('shake-error');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function verifyPassword() {
+            const pass = document.getElementById('adminPass').value;
+            const authBox = document.getElementById('authBox');
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (pass === ADMIN_PASSWORD) {
+                // إذا الرمز صح: نقفل النافذة، نخفي البيجر، ونظهر لوحة الإدارة
+                closeAuthModal();
+                document.getElementById('pagerView').style.display = 'none';
+                
+                const adminView = document.getElementById('adminView');
+                adminView.style.display = 'block';
+                setTimeout(() => adminView.classList.add('active'), 50);
+            } else {
+                // إذا الرمز خطأ: نهز الشاشة ونقوله اذلف!
+                errorMsg.style.display = 'block';
+                authBox.classList.remove('shake-error');
+                void authBox.offsetWidth; // Trigger reflow
+                authBox.classList.add('shake-error');
+            }
+        }
+
+        function logoutAdmin() {
+            // تسجيل خروج المسؤول والعودة للبيجر
+            document.getElementById('adminView').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('adminView').style.display = 'none';
+                document.getElementById('pagerView').style.display = 'block';
+            }, 300);
+        }
+
+
+        // === نظام البيجر والصوتيات (يعمل للجميع) ===
+        let audioCtx = null;
+        let lastSignalCount = 0;
+
+        function initAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            document.getElementById('audioBtn').style.display = 'none';
+        }
+
+        function playBeep() {
+            if (!audioCtx) return;
+            try {
+                for (let i = 0; i < 4; i++) {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'square';
+                        osc.frequency.value = 2500;
+                        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.1);
+                    }, i * 150);
+                }
+            } catch(e) {}
+        }
+
+        // === نظام إرسال واستقبال الشفرات (LocalStorage) ===
+        function broadcastSignal() {
+            const target = document.getElementById('targetUser').value;
+            const code = document.getElementById('signalCode').value.trim();
+            const text = document.getElementById('signalText').value.trim();
+            const status = document.getElementById('adminStatus');
+
+            if (!code || !text) {
+                status.style.color = "var(--neon-red)";
+                status.innerText = "خطأ: يرجى كتابة الكود والرسالة!";
+                return;
+            }
+
+            const newSignal = {
+                target: target,
+                code: code,
+                text: text,
+                time: new Date().toLocaleTimeString()
+            };
+
+            let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
+            signals.unshift(newSignal);
+            localStorage.setItem('lordtown_signals', JSON.stringify(signals));
+
+            status.style.color = "var(--neon-green)";
+            status.innerText = "✓ تم بث الشفرة بنجاح!";
+            
+            document.getElementById('signalCode').value = '';
+            document.getElementById('signalText').value = '';
+            setTimeout(() => status.innerText = '', 3000);
+        }
+
+        // فحص مستمر لرسائل البيجر كل ثانية
+        setInterval(() => {
+            let signals = JSON.parse(localStorage.getItem('lordtown_signals') || '[]');
+            if (signals.length > lastSignalCount) {
+                if (lastSignalCount !== 0) playBeep();
+                lastSignalCount = signals.length;
+                updatePagerScreen(signals);
+            }
+        }, 1000);
+
+        function updatePagerScreen(signals) {
+            const screen = document.getElementById('pagerScreen');
+            screen.innerHTML = '';
+            signals.forEach(sig => {
+                const div = document.createElement('div');
+                div.className = 'signal-card';
+                div.innerHTML = `
+                    <div style="font-size: 11px; color: #668c75; margin-bottom: 5px;">[${sig.time}] المستهدف: ${sig.target}</div>
+                    <div class="signal-code">CODE: ${sig.code}</div>
+                    <div style="font-size: 13px; margin-top: 5px;">${sig.text}</div>
+                `;
+                screen.appendChild(div);
+            });
+        }
+    </script>
 </body>
 </html>
