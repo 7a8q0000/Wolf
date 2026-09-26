@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة قيادة العمليات - إرسال شفرات البيجر</title>
+    <style>
+        body {
+            background-color: #080c09;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 30px;
+            margin: 0;
+        }
+        .admin-container {
+            max-width: 700px;
+            margin: 0 auto;
+            border: 2px solid #ff3333;
+            padding: 30px;
+            background-color: #120505;
+            box-shadow: 0 0 25px rgba(255, 51, 51, 0.2);
+        }
+        h1 {
+            color: #ff4d4d;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #bfa1a1;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff9999;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid #ff4d4d;
+            color: #fff;
+            padding: 12px;
+            font-size: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            box-sizing: border-box;
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            background: #ff3333;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        button:hover {
+            background: #cc0000;
+            box-shadow: 0 0 15px #ff3333;
+        }
+        #statusMessage {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .history-box {
+            margin-top: 30px;
+            border-top: 1px dashed #555;
+            padding-top: 15px;
+        }
+        .history-item {
+            background: #1a0505;
+            border: 1px solid #441111;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #ffcccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <h1>[ لوحة قيادة العمليات - إرسال شفرات البيجر ]</h1>
+        <div class="subtitle">مخصص لمسؤولي السيناريو لإرسال الإشارات والبيانات الطارئة لفرقة التحقيق</div>
+
+        <div class="form-group">
+            <label for="recipient">اختر المستقبل المستهدف:</label>
+            <select id="recipient">
+                <option value="الفرقة بالكامل">الفرقة بالكامل (جميع أجهزة البيجر)</option>
+                <option value="ماثيو ستانلي">ماثيو ستانلي (القائد)</option>
+                <option value="سكلر">سكلر</option>
+                <option value="بيتا">بيتا</option>
+                <option value="ليو">ليو</option>
+                <option value="سيف">سيف</option>
+                <option value="سلف">سلف</option>
+                <option value="أيمن">أيمن</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="pagerCode">كود البيجر (الأرقام المشفرة):</label>
+            <input type="text" id="pagerCode" placeholder="مثال: 884 - 109 - 332">
+        </div>
+
+        <div class="form-group">
+            <label for="cipherText">محتوى الرسالة / اللغز المشفر:</label>
+            <textarea id="cipherText" placeholder="اكتب نص الشفرة أو التوجيه هنا..."></textarea>
+        </div>
+
+        <button onclick="sendSignalToTeam()">إرسال الشفرة وتنبيه البيجر 📡</button>
+
+        <div id="statusMessage"></div>
+
+        <div class="history-box">
+            <label>سجل العمليات المرسلة في الجلسة الحالية:</label>
+            <div id="logContainer">
+                <span style="color: #666; font-size: 12px;">لم يتم إرسال أي شفرة حتى الآن...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // دالة توليد صوت التنبيه (BEEP) برمئياً بدون الحاجة لملفات صوت خارجية
+        function playPagerBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // عمل نغمتين متتاليتين تشبه تماماً صوت البيجر القديم
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        oscillator.type = 'sine';
+                        oscillator.frequency.value = 1800; // حِدّة الصوت (تردد عالي يشبه الإنذار)
+                        
+                        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        
+                        oscillator.start();
+                        oscillator.stop(audioCtx.currentTime + 0.15);
+                    }, i * 200);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked");
+            }
+        }
+
+        function sendSignalToTeam() {
+            const recipient = document.getElementById('recipient').value;
+            const pagerCode = document.getElementById('pagerCode').value.trim();
+            const cipherText = document.getElementById('cipherText').value.trim();
+            const statusMessage = document.getElementById('statusMessage');
+            const logContainer = document.getElementById('logContainer');
+
+            if (!pagerCode || !cipherText) {
+                statusMessage.style.color = "#ff3333";
+                statusMessage.innerHTML = "[ خطأ: يرجى تعبئة كود البيجر ونص الشفرة ]";
+                return;
+            }
+
+            // تشغيل صوت التنبيه للمسؤول للتأكد من خروج الإشارة
+            playPagerBeep();
+
+            // حفظ الرسالة في التخزين المحلي (LocalStorage) لكي تظهر تلقائياً في صفحة الفريق والبيجر الخاصة بهم
+            const newSignal = {
+                recipient: recipient,
+                code: pagerCode,
+                text: cipherText,
+                time: new Date().toLocaleTimeString()
+            };
+
+            // جلب الرسائل القديمة وإضافة الجديدة
+            let signalsList = JSON.parse(localStorage.getItem('pagerSignals') || '[]');
+            signalsList.unshift(newSignal);
+            localStorage.setItem('pagerSignals', JSON.stringify(signalsList));
+
+            statusMessage.style.color = "#00ff66";
+            statusMessage.innerHTML = "[ تم إرسال الإشارة وبث صوت البيجر بنجاح للفرقة! ]";
+
+            // إضافة للسجل
+            if (logContainer.querySelector('span')) {
+                logContainer.innerHTML = '';
+            }
+            const logItem = document.createElement('div');
+            logItem.className = 'history-item';
+            logItem.innerHTML = `<strong>[${newSignal.time}]</strong> إلى (${recipient}) | الكود: <code>${pagerCode}</code>`;
+            logContainer.prepend(logItem);
+
+            // تفريغ الحقول
+            document.getElementById('pagerCode').value = '';
+            document.getElementById('cipherText').value = '';
+        }
+    </script>
+
+</body>
+</html>
